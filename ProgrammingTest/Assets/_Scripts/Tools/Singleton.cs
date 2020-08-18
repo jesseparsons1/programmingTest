@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
-
 {
     public static T instance;
 
-    private void Awake()
+    protected virtual void OnEnable()
     {
         if (instance == null)
         {
