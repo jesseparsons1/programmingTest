@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UIManager : Singleton<UIManager>
+public class UIManager : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI currentModeText = null;
+    private TextMeshProUGUI currentMode = null;
     [SerializeField]
-    private TextMeshProUGUI planetInfoText = null;
+    private TextMeshProUGUI currentPlanetInfo = null;
     [SerializeField]
     private Button switchModeButton = null;
     [SerializeField]
@@ -17,103 +17,71 @@ public class UIManager : Singleton<UIManager>
     [SerializeField]
     private List<Button> viewPlanetButtons = new List<Button>();
 
-    private PlanetData.PlanetInfo curDisplayedInfo;
-    public PlanetData.PlanetInfo CurDisplayedInfo
-    {
-        get => curDisplayedInfo;
-        set
-        {
-            curDisplayedInfo = value;
-            UpdatePlanetInfoText();
-        }
-    }
+    private void OnEnable() => GameManager.OnCurrentInfoUpdatedEvent += OnCurrentInfoChanged;
+
+    private void OnDisable() => GameManager.OnCurrentInfoUpdatedEvent -= OnCurrentInfoChanged;
 
     private void Update()
     {
         //Set buttons interactive or uninteractive based on global variable
-        switchModeButton.interactable = GameManager.instance.isInteractable;
+        switchModeButton.interactable = GameManager.instance.IsInteractable;
 
         foreach (Button button in viewPlanetButtons)
-            button.interactable = GameManager.instance.isInteractable;
-
+            button.interactable = GameManager.instance.IsInteractable;
     }
 
-    private void ClearPlanetInfoText() => planetInfoText.text = "Click on a planet to find out more!";
+    private void ClearPlanetInfoText() => currentPlanetInfo.text = "Click on a planet to find out more!";
 
-    private void UpdatePlanetInfoText()
+    private void OnCurrentInfoChanged()
     {
-        planetInfoText.text =   "Name: " + CurDisplayedInfo.planetName +"\n" +
-                                "Temperature (F): " + CurDisplayedInfo.planetTemp + "\n" +
-                                "Surface Gravity (m/s^2): " + CurDisplayedInfo.planetGravityScale + "\n" +
-                                "Number of Moons: " + CurDisplayedInfo.numMoons; 
+        currentPlanetInfo.text =   "Name: " + GameManager.instance.CurDisplayedInfo.planetName +"\n" +
+                                "Temperature (F): " + GameManager.instance.CurDisplayedInfo.planetTemp + "\n" +
+                                "Surface Gravity (m/s^2): " + GameManager.instance.CurDisplayedInfo.planetGravityScale + "\n" +
+                                "Number of Moons: " + GameManager.instance.CurDisplayedInfo.numMoons; 
     }
 
-    public void OnMercuryButtonDown()
-    {
-        ClearPlanetInfoText();
-        if (GameManager.instance.isInteractable)
-            StartCoroutine(GameManager.instance.MoveDistanceCameraToViewPlanetNo(0));
-    }
+    #region Buttons
 
-    public void OnVenusButtonDown()
-    {
-        ClearPlanetInfoText();
-        if (GameManager.instance.isInteractable)
-            StartCoroutine(GameManager.instance.MoveDistanceCameraToViewPlanetNo(1));
-    }
+    public void OnMercuryButtonDown() => ViewPlanet(0);
 
-    public void OnEarthButtonDown()
-    {
-        ClearPlanetInfoText();
-        if (GameManager.instance.isInteractable)
-            StartCoroutine(GameManager.instance.MoveDistanceCameraToViewPlanetNo(2));
-    }
+    public void OnVenusButtonDown() => ViewPlanet(1);
 
-    public void OnMarsButtonDown()
-    {
-        ClearPlanetInfoText();
-        if (GameManager.instance.isInteractable)
-            StartCoroutine(GameManager.instance.MoveDistanceCameraToViewPlanetNo(3));
-    }
+    public void OnEarthButtonDown() => ViewPlanet(2);
 
-    public void OnJupiterButtonDown()
-    {
-        ClearPlanetInfoText();
-        if (GameManager.instance.isInteractable)
-            StartCoroutine(GameManager.instance.MoveDistanceCameraToViewPlanetNo(4));
-    }
+    public void OnMarsButtonDown() => ViewPlanet(3);
 
-    public void OnSaturnButtonDown()
-    {
-        ClearPlanetInfoText();
-        if (GameManager.instance.isInteractable)
-            StartCoroutine(GameManager.instance.MoveDistanceCameraToViewPlanetNo(5));
-    }
+    public void OnJupiterButtonDown() => ViewPlanet(4);
 
-    public void OnUranusButtonDown()
-    {
-        ClearPlanetInfoText();
-        if (GameManager.instance.isInteractable)
-            StartCoroutine(GameManager.instance.MoveDistanceCameraToViewPlanetNo(6));
-    }
+    public void OnSaturnButtonDown() => ViewPlanet(5);
 
-    public void OnNeptuneButtonDown()
+    public void OnUranusButtonDown() => ViewPlanet(6);
+
+    public void OnNeptuneButtonDown() => ViewPlanet(7);
+
+    private void ViewPlanet(int indexOfPlanetToView)
     {
-        ClearPlanetInfoText();
-        if (GameManager.instance.isInteractable)
-            StartCoroutine(GameManager.instance.MoveDistanceCameraToViewPlanetNo(7));
+        if (GameManager.instance.IsInteractable)
+        {
+            if (GameManager.instance.CurrentlyViewedPlanetIndex != indexOfPlanetToView)
+            {
+                ClearPlanetInfoText();
+                StartCoroutine(GameManager.instance.ViewPlanet(indexOfPlanetToView));
+            }
+        }
     }
 
     public void OnSwitchModeButtonDown()
     {
         ClearPlanetInfoText();
 
-        bool switchingToDistanceMode = GameManager.instance.Mode == 1;
+        bool switchingToDistanceMode = GameManager.instance.CurMode == 1;
 
-        currentModeText.text = switchingToDistanceMode ? "DISTANCE MODE" : "SIZE MODE";
+        currentMode.text = switchingToDistanceMode ? "DISTANCE MODE" : "SIZE MODE";
         viewPlanetButtonParent.SetActive(switchingToDistanceMode);
 
-        if (GameManager.instance.isInteractable)
+        if (GameManager.instance.IsInteractable)
             StartCoroutine(GameManager.instance.ToggleMode());
     }
+
+    #endregion
 }

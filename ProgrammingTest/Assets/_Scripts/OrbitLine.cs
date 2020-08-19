@@ -6,9 +6,11 @@ using UnityEngine;
 public class OrbitLine : MonoBehaviour
 {
     [SerializeField]
-    private GameObject planet;
+    private GameObject planet = null;
     [SerializeField]
-    private LineRenderer lineRenderer;
+    private LineRenderer lineRenderer = null;
+    [SerializeField]
+    private int numSectors = 0;
 
     private float distance;
     public float Distance
@@ -25,34 +27,24 @@ public class OrbitLine : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private int numSectors;
+    private float sectorAngle;
 
-    float sectorAngle;
-    Vector3[] linePoints;
-
-    private void OnEnable()
-    {
-        Initialise();
-        UpdateLine();
-    }
+    private void OnEnable() => Initialise();
 
     private void Initialise()
     {
-        //Since the number of segments will not change at run time, we can cache several values
+        //Since the number of segments will not change at run time...
+        //... we can cache the sector angle and initialise lineRenderer to have set number of positions
         lineRenderer.positionCount = numSectors + 1;
         sectorAngle = (float) 360 / numSectors;
-        linePoints = new Vector3[numSectors + 1];
+        Distance = planet.transform.position.magnitude;
     }
 
     private void UpdateLine()
     {
         //Recalculate line points
         for (int i = 0; i <= numSectors; i++)
-            linePoints[i] = Quaternion.Euler(0, i * sectorAngle, 0) * Vector3.left * Distance;
-
-        //Set line points
-        lineRenderer.SetPositions(linePoints);
+            lineRenderer.SetPosition(i, Quaternion.Euler(0, i * sectorAngle, 0) * Vector3.left * Distance);
     }
 
     //Update distance every frame

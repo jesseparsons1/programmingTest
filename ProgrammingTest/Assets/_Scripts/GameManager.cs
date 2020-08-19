@@ -5,129 +5,98 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
     [SerializeField]
-    private PlanetData planetDataHolder = null;
-    public PlanetData PlanetDataHolder => planetDataHolder;
+    private PlanetDataHolder planetDataHolder = null;
+    public PlanetDataHolder PlanetDataHolder => planetDataHolder;
+    [SerializeField]
+    private PlanetMover planetMover = null;
+    public PlanetMover PlanetMover => planetMover;
+    [SerializeField]
+    private DistanceCamera distanceCamera = null;
 
-    public float planetLerpSpeed = 5f;
+    #region Events
 
-    public Camera sizeModeCamera;
-    public Camera disModeCam;
-    public Transform disModeCamRail;
-    public float disModeCamMoveSpeed;
+    public delegate void OnCurrentInfoUpdated();
+    public static event OnCurrentInfoUpdated OnCurrentInfoUpdatedEvent;
 
-    private readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+    public delegate void OnCurrentlyViewedPlanetChanged();
+    public static event OnCurrentlyViewedPlanetChanged OnCurrentlyViewedPlanetChangedEvent;
 
-    //Where should the planets be in each mode
-    private readonly List<Vector3> planetPositionsInDisMode = new List<Vector3>();
-    private readonly List<Vector3> planetPositionsInSizeMode = new List<Vector3>();
+    public delegate void OnToggleMode(bool switchingToSizeMode);
+    public static event OnToggleMode OnToggleModeEvent;
 
-    public List<Vector3> camPivotPositionsInDisMode = new List<Vector3>();
-    public List<Planet> planets = new List<Planet>();
-    public List<OrbitLine> orbitLines = new List<OrbitLine>();
+    #endregion
 
-    public bool isInteractable = true;
-
-    //Can take values 0 or 1 representing current game mode, distance or size, respectively
-    private int mode = 0;
-    public int Mode
+    private Planet.Info curDisplayedInfo;
+    public Planet.Info CurDisplayedInfo
     {
-        get => mode;
+        get => curDisplayedInfo;
         set
         {
-            mode = (int)Mathf.Clamp01(value);
+            curDisplayedInfo = value;
+            OnCurrentInfoUpdatedEvent?.Invoke();
         }
     }
 
-    protected override void OnEnable()
+    private int currentlyViewedPlanetIndex;
+    public int CurrentlyViewedPlanetIndex
     {
-        base.OnEnable();
-        Initialise();
-    }
-
-    private void Initialise()
-    {
-        //Cache where planets should be in each mode
-        for (int i = 0; i < planets.Count; i++)
+        get => currentlyViewedPlanetIndex;
+        set
         {
-            planetPositionsInDisMode.Add(planets[i].Body.transform.position);
-            planetPositionsInSizeMode.Add((100 + i * 12) * Vector3.left);
+            currentlyViewedPlanetIndex = value;
+            OnCurrentlyViewedPlanetChangedEvent?.Invoke();
         }
     }
 
-    public IEnumerator MoveDistanceCameraToViewPlanetNo(int i)
+    public bool IsInteractable { get; private set; }  = true;
+
+    //Can take values 0 or 1 representing current game mode, distance or size, respectively
+    private int curMode = 0;
+    public int CurMode
+    {
+        get => curMode;
+        set
+        {
+            curMode = (int)Mathf.Clamp01(value);
+        }
+    }
+
+    private void Start()
+    {
+        //After behaviours have subscribed to events, we can initialise values
+        CurrentlyViewedPlanetIndex = 0;
+    }
+
+    public IEnumerator ViewPlanet(int i)
     {
         //Set game uninteractive
-        isInteractable = false;
+        IsInteractable = false;
 
-        //Get cam rail position for target planet
-        Vector3 targetPosition = camPivotPositionsInDisMode[i];
+        //Since no planet is currently being viewed, we assign a negative value
+        CurrentlyViewedPlanetIndex = -1;
 
-        //While rail is not sufficiently close to target position, lerp it towards it
-        while (!disModeCamRail.position.IsApproximately(targetPosition, 0.2f))
-        {
-            disModeCamRail.position = Vector3.Lerp(disModeCamRail.position, targetPosition, disModeCamMoveSpeed * Time.deltaTime);
-            yield return waitForEndOfFrame;
-        }
+        yield return StartCoroutine(distanceCamera.MoveToView(i));
 
         //Reenable game interactivity
-        isInteractable = true;
+        IsInteractable = true;
     }
 
     public IEnumerator ToggleMode()
     {
         //Set game uninteractive
-        isInteractable = false;
+        IsInteractable = false;
 
         //If we are currently in distance mode, then we are switching to size mode
-        bool switchingToSizeMode = Mode == 0;
+        bool switchingToSizeMode = CurMode == 0;
 
-        //Toggle one camera on and the other off
-        disModeCam.gameObject.SetActive(!switchingToSizeMode);
-        sizeModeCamera.gameObject.SetActive(switchingToSizeMode);
+        OnToggleModeEvent?.Invoke(switchingToSizeMode);
 
-        yield return StartCoroutine(LerpPlanetsToPositions(switchingToSizeMode ? planetPositionsInSizeMode : planetPositionsInDisMode));
+        yield return StartCoroutine(planetMover.LerpPlanetsToPositions(switchingToSizeMode));
 
         //Toggle mode
-        Mode = (Mode + 1) % 2;
+        CurMode = (CurMode + 1) % 2;
 
         //Reenable game interactivity
-        isInteractable = true;
-    }
-
-    private IEnumerator LerpPlanetsToPositions(List<Vector3> positions)
-    {
-        //While not all planets are in the correct positions...
-        while (!AllPlanetsApproxInPositions(positions))
-        {
-            //... loop through them...
-            for (int i = 0; i < planets.Count; i++)
-            {
-                Vector3 v = planets[i].Body.transform.position;
-
-                //... and for each one not in the right place...
-                if (!v.IsApproximately(positions[i]))
-                {
-                    //... lerp it towards correct position
-                    planets[i].Body.transform.position = Vector3.Lerp(v, positions[i], planetLerpSpeed * Time.deltaTime);
-                }
-            }
-            yield return waitForEndOfFrame;
-        }
-    }
-
-    private bool AllPlanetsApproxInPositions(List<Vector3> positions)
-    {
-        //Loop through each planet...
-        for (int i = 0; i < planets.Count; i++)
-        {
-            Vector3 v = planets[i].Body.transform.position;
-
-            //... and if one of them is not sufficiently close to target, then not all of them are in correct position
-            if (!v.IsApproximately(positions[i], 0.5f))
-                return false;
-        }
-
-        //Otherwise, all in correct prosition
-        return true;
+        IsInteractable = true;
     }
 }
