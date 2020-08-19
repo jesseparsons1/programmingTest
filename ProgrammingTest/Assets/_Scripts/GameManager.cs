@@ -12,6 +12,7 @@ public class GameManager : Singleton<GameManager>
     public PlanetMover PlanetMover => planetMover;
     [SerializeField]
     private DistanceCamera distanceCamera = null;
+    public DistanceCamera DistanceCamera => distanceCamera;
 
     #region Events
 
@@ -75,7 +76,7 @@ public class GameManager : Singleton<GameManager>
         //Since no planet is currently being viewed, we assign a negative value
         CurrentlyViewedPlanetIndex = -1;
 
-        yield return StartCoroutine(distanceCamera.MoveToView(i));
+        yield return StartCoroutine(distanceCamera.ChangeView(i));
 
         //Reenable game interactivity
         IsInteractable = true;
@@ -99,4 +100,6 @@ public class GameManager : Singleton<GameManager>
         //Reenable game interactivity
         IsInteractable = true;
     }
+
+    public Planet GetPlanet(int i) => planetMover.planets[i];
 }

@@ -6,5 +6,9 @@ public class PlanetDataHolder : MonoBehaviour
 {
     [SerializeField]
     private List<Planet.Info> planetInfos = new List<Planet.Info>();
-    public List<Planet.Info> PlanetInfos => planetInfos; 
+    public List<Planet.Info> PlanetInfos => planetInfos;
+
+    [SerializeField]
+    private List<TextAsset> planetDescriptions = new List<TextAsset>();
+    public List<TextAsset> PlanetDescriptions => planetDescriptions;
 }
