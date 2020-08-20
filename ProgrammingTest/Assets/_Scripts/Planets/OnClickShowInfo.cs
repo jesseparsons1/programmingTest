@@ -9,6 +9,7 @@ public class OnClickShowInfo : MonoBehaviour
 
     private void OnMouseDown()
     {
+        //Update the currently displayed info
         if (GameManager.instance.IsInteractable)
             GameManager.instance.CurDisplayedInfo = myPlanet.MyInfo;
     }

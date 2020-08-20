@@ -6,18 +6,16 @@ using TMPro;
 public class WorldSpaceInfo : MonoBehaviour
 {
     [SerializeField]
-    private Canvas canvas;
+    private Canvas canvas = null;
     [SerializeField]
-    private TextMeshProUGUI distanceFromSunText;
+    private TextMeshProUGUI distanceFromSunText = null;
     public TextMeshProUGUI DistanceFromSunText => distanceFromSunText;
 
-    public void ToggleInfo(bool on)
-    {
-        canvas.gameObject.SetActive(on);
-    }
+    public void ToggleInfo(bool on) => canvas.gameObject.SetActive(on);
 
     private void Update()
     {
+        //If the canvas is active, rotate it to look at the distance camera
         if (canvas.gameObject.activeInHierarchy)
         {
             canvas.transform.LookAt(GameManager.instance.DistanceCamera.Camera.transform);

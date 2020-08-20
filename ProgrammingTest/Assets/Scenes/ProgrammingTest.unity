@@ -360,107 +360,6 @@ Transform:
   m_Father: {fileID: 1558521940}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &37906417
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 37906419}
-  - component: {fileID: 37906418}
-  m_Layer: 0
-  m_Name: Planet Data Holder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &37906418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 37906417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0eacd56eea60149bbb10ba421c500d3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  planetInfos:
-  - planetName: 1
-    planetTemp: 800
-    planetGravityScale: 3.7
-    numMoons: 0
-    distanceFromSun: 57
-    description: {fileID: 4900000, guid: ff4fefd89984b4a1fadd01263e5b85ac, type: 3}
-  - planetName: 2
-    planetTemp: 880
-    planetGravityScale: 8.87
-    numMoons: 0
-    distanceFromSun: 108
-    description: {fileID: 4900000, guid: b4e9f706704d74d7d887529bacfc230f, type: 3}
-  - planetName: 3
-    planetTemp: 61
-    planetGravityScale: 9.798
-    numMoons: 1
-    distanceFromSun: 149
-    description: {fileID: 4900000, guid: 6b570eed064444edeba28150de502637, type: 3}
-  - planetName: 4
-    planetTemp: -20
-    planetGravityScale: 3.71
-    numMoons: 2
-    distanceFromSun: 228
-    description: {fileID: 4900000, guid: 938ee88c12bd944e1aaefc373039afa1, type: 3}
-  - planetName: 5
-    planetTemp: -162
-    planetGravityScale: 24.92
-    numMoons: 79
-    distanceFromSun: 780
-    description: {fileID: 4900000, guid: 81258cee439a9425ab6c721082240f1f, type: 3}
-  - planetName: 6
-    planetTemp: -218
-    planetGravityScale: 10.44
-    numMoons: 62
-    distanceFromSun: 1437
-    description: {fileID: 4900000, guid: f491bc29c7b5c4351bc797c1a44b90b5, type: 3}
-  - planetName: 7
-    planetTemp: -320
-    planetGravityScale: 8.87
-    numMoons: 27
-    distanceFromSun: 2871
-    description: {fileID: 4900000, guid: 67e76ccea10534af2bb260065b6162fd, type: 3}
-  - planetName: 8
-    planetTemp: -331
-    planetGravityScale: 11.15
-    numMoons: 14
-    distanceFromSun: 4530
-    description: {fileID: 4900000, guid: a46cd4cf66a2e4f4681f10692f70ae15, type: 3}
-  planetDescriptions:
-  - {fileID: 4900000, guid: c3555ddfc941343a08655ddfdd01a5b9, type: 3}
-  - {fileID: 4900000, guid: b30ffcc6bdbbb4642a4b23ba905c2006, type: 3}
-  - {fileID: 4900000, guid: fa7cc32d414fd44bc9418b10b8c33bcc, type: 3}
-  - {fileID: 4900000, guid: 4b6027906eafa420a8f00e57e781641e, type: 3}
-  - {fileID: 4900000, guid: fe8dec3b2094f47ab937a32e6e49d527, type: 3}
-  - {fileID: 4900000, guid: ecbc494953a694225ae7cce4a9a1a9d9, type: 3}
-  - {fileID: 4900000, guid: ea1268edeb2374607b61353e7476082b, type: 3}
-  - {fileID: 4900000, guid: d3efa08a68d494642b21b5d12f960333, type: 3}
---- !u!4 &37906419
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 37906417}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 953094120}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &40288250
 GameObject:
   m_ObjectHideFlags: 0
@@ -4843,6 +4742,7 @@ GameObject:
   - component: {fileID: 953094120}
   - component: {fileID: 953094121}
   - component: {fileID: 953094122}
+  - component: {fileID: 953094123}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -4860,8 +4760,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 37906419}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4877,7 +4776,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd546af6e41154fa58d4ed8b2610d96b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  planetDataHolder: {fileID: 37906418}
+  planetDataHolder: {fileID: 953094123}
   planetMover: {fileID: 953094122}
   distanceCamera: {fileID: 999037871}
 --- !u!114 &953094122
@@ -4902,6 +4801,35 @@ MonoBehaviour:
   - {fileID: 1150682413}
   - {fileID: 928299067}
   - {fileID: 1638200855}
+--- !u!114 &953094123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 953094119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eacd56eea60149bbb10ba421c500d3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetInfos:
+  - distanceFromSun: 57
+    description: {fileID: 4900000, guid: ff4fefd89984b4a1fadd01263e5b85ac, type: 3}
+  - distanceFromSun: 108
+    description: {fileID: 4900000, guid: b4e9f706704d74d7d887529bacfc230f, type: 3}
+  - distanceFromSun: 149
+    description: {fileID: 4900000, guid: 6b570eed064444edeba28150de502637, type: 3}
+  - distanceFromSun: 228
+    description: {fileID: 4900000, guid: 938ee88c12bd944e1aaefc373039afa1, type: 3}
+  - distanceFromSun: 780
+    description: {fileID: 4900000, guid: 81258cee439a9425ab6c721082240f1f, type: 3}
+  - distanceFromSun: 1437
+    description: {fileID: 4900000, guid: f491bc29c7b5c4351bc797c1a44b90b5, type: 3}
+  - distanceFromSun: 2871
+    description: {fileID: 4900000, guid: 67e76ccea10534af2bb260065b6162fd, type: 3}
+  - distanceFromSun: 4530
+    description: {fileID: 4900000, guid: a46cd4cf66a2e4f4681f10692f70ae15, type: 3}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

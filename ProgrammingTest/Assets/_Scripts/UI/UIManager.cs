@@ -17,11 +17,21 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private List<Button> viewPlanetButtons = new List<Button>();
 
-    private void OnEnable() => GameManager.OnCurrentInfoUpdatedEvent += OnCurrentInfoChanged;
+    private void OnEnable()
+    {
+        GameManager.OnCurrentInfoUpdatedEvent += OnCurrentInfoChanged;
+        GameManager.OnGameInteractabilityToggledEvent += OnGameInteractabilityToggled;
+    }
 
-    private void OnDisable() => GameManager.OnCurrentInfoUpdatedEvent -= OnCurrentInfoChanged;
+    private void OnDisable()
+    {
+        GameManager.OnCurrentInfoUpdatedEvent -= OnCurrentInfoChanged;
+        GameManager.OnGameInteractabilityToggledEvent -= OnGameInteractabilityToggled;
+    }
 
-    private void Update()
+    //Acts like a view: responds to changes in the data held in GameManager
+    private void OnCurrentInfoChanged() => currentPlanetInfo.text = GameManager.instance.CurDisplayedInfo.description.text;
+    private void OnGameInteractabilityToggled()
     {
         switchModeButton.interactable = GameManager.instance.IsInteractable;
 
@@ -29,39 +39,22 @@ public class UIManager : MonoBehaviour
             button.interactable = GameManager.instance.IsInteractable;
     }
 
-    private void ClearPlanetInfoText() => currentPlanetInfo.text = "Click on a planet to find out more!";
-
-    private void OnCurrentInfoChanged()
-    {
-        //currentPlanetInfo.text =   "Name: " + GameManager.instance.CurDisplayedInfo.planetName +"\n" +
-        //                        "Temperature (F): " + GameManager.instance.CurDisplayedInfo.planetTemp + "\n" +
-        //                        "Surface Gravity (m/s^2): " + GameManager.instance.CurDisplayedInfo.planetGravityScale + "\n" +
-        //                        "Number of Moons: " + GameManager.instance.CurDisplayedInfo.numMoons;
-        currentPlanetInfo.text = GameManager.instance.CurDisplayedInfo.description.text;
-    }
-
     #region Buttons
 
     public void OnMercuryButtonDown() => ViewPlanet(0);
-
     public void OnVenusButtonDown() => ViewPlanet(1);
-
     public void OnEarthButtonDown() => ViewPlanet(2);
-
     public void OnMarsButtonDown() => ViewPlanet(3);
-
     public void OnJupiterButtonDown() => ViewPlanet(4);
-
     public void OnSaturnButtonDown() => ViewPlanet(5);
-
     public void OnUranusButtonDown() => ViewPlanet(6);
-
     public void OnNeptuneButtonDown() => ViewPlanet(7);
 
     private void ViewPlanet(int indexOfPlanetToView)
     {
         if (GameManager.instance.IsInteractable)
         {
+            //If a planet has been selected that isn't the one currently being viewed, then change to view that one instead
             if (GameManager.instance.CurrentlyViewedPlanetIndex != indexOfPlanetToView)
             {
                 ClearPlanetInfoText();
@@ -74,6 +67,7 @@ public class UIManager : MonoBehaviour
     {
         ClearPlanetInfoText();
 
+        //Depending on which mode we are switching to, update relevant UI elements
         bool switchingToDistanceMode = GameManager.instance.CurMode == 1;
 
         currentMode.text = switchingToDistanceMode ? "DISTANCE MODE" : "SIZE MODE";
@@ -84,4 +78,6 @@ public class UIManager : MonoBehaviour
     }
 
     #endregion
+
+    private void ClearPlanetInfoText() => currentPlanetInfo.text = "Click on a planet to find out more!";
 }

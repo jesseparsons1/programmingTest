@@ -30,7 +30,7 @@ public class DistanceCamera : MonoBehaviour
     [SerializeField]
     private List<float> maxZoomLevels = new List<float>();
     [SerializeField]
-    private float maxZoomOutLevel;
+    private float maxZoomOutLevel = 0;
 
     //Panning variables
     [SerializeField]
@@ -51,17 +51,21 @@ public class DistanceCamera : MonoBehaviour
 
     private void OnDisable() => GameManager.OnToggleModeEvent -= OnToggleMode;
 
+    //When the mode changes, camera sets itself active accordingly
     private void OnToggleMode(bool switchingToSizeMode) => cam.SetActive(!switchingToSizeMode);
 
     private void Update()
     {
-        if (!isMoving)
+        //If not changing view and in distance mode...  
+        if (!isChangingView && GameManager.instance.CurMode == 0)
         {
+            //... then respond to players zoom and pan input
             ZoomCamera();
             PanCamera();
         }
         else
         {
+            //otherwise, cancel zoom and pan movement
             curZoomSpeed = 0f;
             curPanSpeed = 0f;
         }
@@ -112,19 +116,17 @@ public class DistanceCamera : MonoBehaviour
         rail.parent.localRotation = Quaternion.Euler(newRot);
     }
 
-    bool isMoving;
+    bool isChangingView;
 
     public IEnumerator ChangeView(int planetIndex)
     {
-        isMoving = true;
+        isChangingView = true;
 
         yield return StartCoroutine(ResetPanRotation());
         yield return StartCoroutine(AdjustZoomForNextPlanet(planetIndex));
         yield return StartCoroutine(MoveAlongRail(planetIndex));
 
-        isMoving = false;
-
-        GameManager.instance.CurrentlyViewedPlanetIndex = planetIndex;
+        isChangingView = false;
     }
 
     private IEnumerator ResetPanRotation()

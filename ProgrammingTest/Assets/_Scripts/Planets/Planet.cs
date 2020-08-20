@@ -10,10 +10,10 @@ public class Planet : MonoBehaviour
     [System.Serializable]
     public class Info
     {
-        public Names planetName;
-        public float planetTemp;
-        public float planetGravityScale;
-        public int numMoons;
+        //public Names planetName;
+        //public float planetTemp;
+        //public float planetGravityScale;
+        //public int numMoons;
         public int distanceFromSun;
         public TextAsset description;
     }
@@ -27,7 +27,7 @@ public class Planet : MonoBehaviour
     private Transform cameraViewPivot = null;
     public Transform CameraViewPivot => cameraViewPivot;
     [SerializeField]
-    private WorldSpaceInfo worldSpaceInfo;
+    private WorldSpaceInfo worldSpaceInfo = null;
 
     public Info MyInfo { get; private set; }
 
@@ -37,9 +37,13 @@ public class Planet : MonoBehaviour
 
     private void Start()
     {
+        //Retrieve info from data holder
         MyInfo = GameManager.instance.PlanetDataHolder.PlanetInfos[planetIndex];
+
+        //Update world space canvas with this info
         worldSpaceInfo.DistanceFromSunText.text = MyInfo.distanceFromSun.AddCommas() + ",000,000 km";
     }
 
+    //When the planet currently being viewed changes, toggle the world space info accordingly
     private void OnCurrentlyViewedPlanetChanged() => worldSpaceInfo.ToggleInfo(GameManager.instance.CurrentlyViewedPlanetIndex == planetIndex);
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public static class ExtensionMethods 
 {
+    //FLOAT EXTENSIONS
+
     public static float PositiveModulo(this float x, int modulus)
     {
         float newX = x % modulus;
@@ -25,6 +27,12 @@ public static class ExtensionMethods
         }
     }
 
+
+
+
+
+    //VECTOR3 EXTENSIONS
+
     public static bool IsApproximately(this Vector3 u, Vector3 v)
     {
         return Mathf.Approximately(u.magnitude, v.magnitude);      
@@ -42,6 +50,12 @@ public static class ExtensionMethods
             return (u - v).magnitude <= minError;
         }
     }
+
+
+
+
+
+    //STRING EXTENSIONS
 
     public static string AddCommas(this int x)
     {

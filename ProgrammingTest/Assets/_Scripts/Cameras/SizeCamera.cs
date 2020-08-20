@@ -11,5 +11,6 @@ public class SizeCamera : MonoBehaviour
 
     private void OnDisable() => GameManager.OnToggleModeEvent -= OnToggleMode;
 
+    //When the mode changes, camera sets itself active accordingly
     private void OnToggleMode(bool switchingToSizeMode) => cam.SetActive(switchingToSizeMode);
 }

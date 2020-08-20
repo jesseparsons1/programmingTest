@@ -18,7 +18,7 @@ public class OrbitLine : MonoBehaviour
         get => distance;
         set
         {
-            //If distance changes, we need to update orbit line
+            //If distance changes, we need to update the line
             if (value != distance)
             {
                 distance = Mathf.Max(0, value);

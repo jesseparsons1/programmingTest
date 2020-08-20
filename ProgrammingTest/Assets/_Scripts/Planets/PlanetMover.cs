@@ -6,8 +6,9 @@ public class PlanetMover : MonoBehaviour
 {
     [SerializeField]
     private float planetMoveSpeed = 5f;
-
-    public List<Planet> planets = new List<Planet>();
+    [SerializeField]
+    private List<Planet> planets = new List<Planet>();
+    public List<Planet> Planets => planets;
 
     private readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
 
