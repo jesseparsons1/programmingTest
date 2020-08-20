@@ -22,7 +22,10 @@ public class Planet : MonoBehaviour
     private int planetIndex = 0;
     [SerializeField]
     private GameObject body = null;
-    public GameObject Body => body; 
+    public GameObject Body => body;
+    [SerializeField]
+    private GameObject bodyPivot = null;
+    public GameObject BodyPivot => bodyPivot;
     [SerializeField]
     private Transform cameraViewPivot = null;
     public Transform CameraViewPivot => cameraViewPivot;

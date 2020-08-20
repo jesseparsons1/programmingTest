@@ -38,13 +38,13 @@ public class PlanetMover : MonoBehaviour
             //... loop through them...
             for (int i = 0; i < planets.Count; i++)
             {
-                Vector3 v = planets[i].Body.transform.position;
+                Vector3 v = planets[i].BodyPivot.transform.position;
 
                 //... and for each one not in the right place...
-                if (!v.IsApproximately(positions[i], 0.5f))
+                if (!v.IsApproximately(positions[i], 0.05f))
                 {
                     //... lerp it towards correct position
-                    planets[i].Body.transform.position = Vector3.Lerp(v, positions[i], planetMoveSpeed * Time.deltaTime);
+                    planets[i].BodyPivot.transform.position = Vector3.Lerp(v, positions[i], planetMoveSpeed * Time.deltaTime);
                 }
             }
             yield return waitForEndOfFrame;
@@ -56,10 +56,10 @@ public class PlanetMover : MonoBehaviour
         //Loop through each planet...
         for (int i = 0; i < planets.Count; i++)
         {
-            Vector3 v = planets[i].Body.transform.position;
+            Vector3 v = planets[i].BodyPivot.transform.position;
 
             //... and if one of them is not sufficiently close to target, then not all of them are in correct position
-            if (!v.IsApproximately(positions[i], 0.5f))
+            if (!v.IsApproximately(positions[i], 0.05f))
                 return false;
         }
 

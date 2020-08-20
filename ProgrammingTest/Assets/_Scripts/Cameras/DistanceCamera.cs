@@ -73,6 +73,7 @@ public class DistanceCamera : MonoBehaviour
 
     private void ZoomCamera()
     {
+        //Calculate zoom acceleration and target zoom speed based on player input
         float acceleration = zoomDeceleration;
         float targetSpeed = 0f;
 
@@ -87,15 +88,20 @@ public class DistanceCamera : MonoBehaviour
             targetSpeed = -maxZoomSpeed;
         }
 
+        //Lerp current zoom speed towards target zoom speed
         curZoomSpeed = Mathf.Lerp(curZoomSpeed, targetSpeed, acceleration * Time.deltaTime);
 
+        //Apply speed
         cam.transform.localPosition += Vector3.forward * curZoomSpeed * Time.deltaTime;
+
+        //Clamp to within zoom bounds
         float clamp = cam.transform.localPosition.z > 0 ? maxZoomLevels[GameManager.instance.CurrentlyViewedPlanetIndex] : maxZoomOutLevel;
         cam.transform.localPosition = Vector3.ClampMagnitude(cam.transform.localPosition, clamp);
     }
 
     private void PanCamera()
     {
+        //Calculate pan acceleration and target pan speed based on player input
         float acceleration = panDeceleration;
         float targetSpeed = 0f;
 
@@ -110,8 +116,10 @@ public class DistanceCamera : MonoBehaviour
             targetSpeed = -maxPanSpeed;
         }
 
+        //Lerp current pan speed towards target pan speed
         curPanSpeed = Mathf.Lerp(curPanSpeed, targetSpeed, acceleration * Time.deltaTime);
 
+        //Apply speed as a change in rotation
         Vector3 newRot = rail.parent.localRotation.eulerAngles + new Vector3(0, curPanSpeed * Time.deltaTime, 0);
         rail.parent.localRotation = Quaternion.Euler(newRot);
     }
@@ -136,15 +144,21 @@ public class DistanceCamera : MonoBehaviour
         float targetAngle = (startingAngle > 180) ? 360 : 0;
         float curAngle = startingAngle;
 
+        //If not in approx correct place...
         while (!curAngle.IsApproximately(targetAngle, 0.05f))
         {
+            //... lerp current angle towards target angle
             curAngle = rail.parent.localRotation.eulerAngles.y;
             Vector3 newRot = Mathf.Lerp(curAngle, targetAngle, panResetSpeed * Time.deltaTime) * Vector3.up;
             rail.parent.localRotation = Quaternion.Euler(newRot);
+
             yield return waitForEndOfFrame;
         }
 
+        //Snap to correct rotation
         rail.parent.localRotation = Quaternion.identity;
+
+        //Reset parent
         rail.SetParent(transform);
     }
 
@@ -160,6 +174,7 @@ public class DistanceCamera : MonoBehaviour
             while (!cam.transform.localPosition.IsApproximately(targetPos, 0.05f))
             {
                 cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, targetPos, zoomAdjustSpeed * Time.deltaTime);
+
                 yield return waitForEndOfFrame;
             }
         }
@@ -169,13 +184,15 @@ public class DistanceCamera : MonoBehaviour
     {
         Vector3 targetRailPos = viewPlanetPositions[nextPlanetIndex];
 
-        //While rail is not sufficiently close to target position, lerp it towards it
+        //While rail is not sufficiently close to target position...
         while (!rail.position.IsApproximately(targetRailPos, 0.05f))
         {
+            //... lerp it towards it
             rail.position = Vector3.Lerp(rail.position, targetRailPos, moveSpeed * Time.deltaTime);
             yield return waitForEndOfFrame;
         }
 
+        //Set parent ready for panning
         rail.SetParent(GameManager.instance.GetPlanet(nextPlanetIndex).CameraViewPivot);
     }
 }
